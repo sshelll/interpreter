@@ -6,6 +6,7 @@ const (
 	EOF TokenType = iota
 	INTEGER
 	PLUS
+	UNKNOWN
 )
 
 type TokenType int

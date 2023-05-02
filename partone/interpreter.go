@@ -36,8 +36,7 @@ func (it *Interpreter) GetNextToken() *Token {
 	}
 
 	// unknown
-	err := fmt.Sprintf("Error parsing input: %s, pos: %d, ch: %c", text, it.pos, curCh)
-	panic(err)
+	return &Token{Type: UNKNOWN, Value: TokenValue(curCh)}
 }
 
 // Expr parser / interpreter, expr -> INTEGER PLUS INTEGER
