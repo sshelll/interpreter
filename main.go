@@ -10,6 +10,7 @@ import (
 
 	"github.com/sshelll/interpreter/part1"
 	"github.com/sshelll/interpreter/part2"
+	"github.com/sshelll/interpreter/part3"
 	"github.com/sshelll/menuscreen"
 )
 
@@ -37,10 +38,12 @@ func main() {
 		fmt.Println(fn(expr))
 	}
 
+	// expr mode
 	if strings.TrimSpace(*expr) != "" {
 		safeFn(*expr)
 	}
 
+	// interactive mode
 	if *interactive {
 		interactiveMode(safeFn)
 	}
@@ -65,6 +68,19 @@ func interactiveMode(fn func(string)) {
 }
 
 func selectPart() func(string) interface{} {
+	// register parts
+	type part struct {
+		fn   func(string) interface{}
+		desc string
+	}
+
+	parts := []*part{
+		{part1Fn, "part 1: simple calculator, only support addition"},
+		{part2Fn, "part 2: support 'minus', 'spaces' and 'long numbers' based on part 1"},
+		{part3Fn, "part 3: support 'multi-ops' based on part 2"},
+	}
+
+	// init menu
 	menu, err := menuscreen.NewMenuScreen()
 	if err != nil {
 		log.Fatalln(err)
@@ -72,31 +88,27 @@ func selectPart() func(string) interface{} {
 	defer menu.Fini()
 
 	menu.SetTitle("parts")
-	menu.AppendLines("part 1: simple calculator (only support addition)")
-	menu.AppendLines("part 2: simple calculator (support 'minus', 'spaces' and 'long numbers')")
+	for _, p := range parts {
+		menu.AppendLines(p.desc)
+	}
 	menu.Start()
 
+	// get chosen part
 	idx, _, ok := menu.ChosenLine()
 	if !ok {
 		log.Fatalln("you haven't chosen any lines")
 	}
-
-	switch idx {
-	case 0:
-		return partoneFn
-	case 1:
-		return parttwoFn
-	default:
-		return nil
-	}
+	return parts[idx].fn
 }
 
-func partoneFn(expr string) interface{} {
-	it := part1.NewInterpreter(expr)
-	return it.Expr()
+func part1Fn(expr string) interface{} {
+	return part1.NewInterpreter(expr).Expr()
 }
 
-func parttwoFn(expr string) interface{} {
-	it := part2.NewInterpreter(expr)
-	return it.Expr()
+func part2Fn(expr string) interface{} {
+	return part2.NewInterpreter(expr).Expr()
+}
+
+func part3Fn(expr string) interface{} {
+	return part3.NewInterpreter(expr).Expr()
 }
