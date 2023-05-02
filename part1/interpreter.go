@@ -1,4 +1,4 @@
-package partone
+package part1
 
 import "fmt"
 

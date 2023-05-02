@@ -1,15 +1,11 @@
-package parttwo
+package part1
 
-import (
-	"fmt"
-	"strconv"
-)
+import "fmt"
 
 const (
 	EOF TokenType = iota
 	INTEGER
 	PLUS
-	MINUS
 	UNKNOWN
 )
 
@@ -23,8 +19,6 @@ func (tt TokenType) String() string {
 		return "INTEGER"
 	case PLUS:
 		return "PLUS"
-	case MINUS:
-		return "MINUS"
 	default:
 		return "UNKNOWN"
 	}
@@ -37,8 +31,8 @@ func (tv TokenValue) String() string {
 }
 
 func (tv TokenValue) Int() int {
-	i, _ := strconv.Atoi(string(tv))
-	return i
+	// in this part, we only have single digit integers
+	return int(tv[0] - '0')
 }
 
 type Token struct {

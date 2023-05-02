@@ -8,8 +8,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/sshelll/interpreter/partone"
-	"github.com/sshelll/interpreter/parttwo"
+	"github.com/sshelll/interpreter/part1"
+	"github.com/sshelll/interpreter/part2"
 	"github.com/sshelll/menuscreen"
 )
 
@@ -92,11 +92,11 @@ func selectPart() func(string) interface{} {
 }
 
 func partoneFn(expr string) interface{} {
-	it := partone.NewInterpreter(expr)
+	it := part1.NewInterpreter(expr)
 	return it.Expr()
 }
 
 func parttwoFn(expr string) interface{} {
-	it := parttwo.NewInterpreter(expr)
+	it := part2.NewInterpreter(expr)
 	return it.Expr()
 }

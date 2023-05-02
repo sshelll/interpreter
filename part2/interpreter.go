@@ -1,4 +1,4 @@
-package parttwo
+package part2
 
 import (
 	"bytes"
