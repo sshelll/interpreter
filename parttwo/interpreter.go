@@ -47,7 +47,7 @@ func (it *Interpreter) GetNextToken() *Token {
 		}
 
 		// unknown
-		return &Token{Type: UNKNOWN, Value: ""}
+		return &Token{Type: UNKNOWN, Value: TokenValue(it.currentChar)}
 	}
 
 	// end of text
