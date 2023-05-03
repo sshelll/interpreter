@@ -11,6 +11,7 @@ import (
 	"github.com/sshelll/interpreter/part1"
 	"github.com/sshelll/interpreter/part2"
 	"github.com/sshelll/interpreter/part3"
+	"github.com/sshelll/interpreter/part4"
 	"github.com/sshelll/menuscreen"
 )
 
@@ -78,6 +79,7 @@ func selectPart() func(string) interface{} {
 		{part1Fn, "part 1: simple calculator, only support addition"},
 		{part2Fn, "part 2: support 'minus', 'spaces' and 'long numbers' based on part 1"},
 		{part3Fn, "part 3: support 'multi-ops' based on part 2"},
+		{part4Fn, "part 4: refactor part3 and replace the ops into '*' and '/'"},
 	}
 
 	// init menu
@@ -111,4 +113,8 @@ func part2Fn(expr string) interface{} {
 
 func part3Fn(expr string) interface{} {
 	return part3.NewInterpreter(expr).Expr()
+}
+
+func part4Fn(expr string) interface{} {
+	return part4.NewInterpreter(expr).Expr()
 }
