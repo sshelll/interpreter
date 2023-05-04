@@ -24,13 +24,13 @@ func (lx *Lexer) GetNextToken() *Token {
 			continue
 		}
 
-		// plus
+		// mul
 		if lx.currentChar == '*' {
 			lx.advance()
 			return &Token{Type: MUL, Value: "*"}
 		}
 
-		// minus
+		// div
 		if lx.currentChar == '/' {
 			lx.advance()
 			return &Token{Type: DIV, Value: "/"}
