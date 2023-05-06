@@ -14,6 +14,7 @@ import (
 	"github.com/sshelll/interpreter/part4"
 	"github.com/sshelll/interpreter/part5"
 	"github.com/sshelll/interpreter/part6"
+	"github.com/sshelll/interpreter/part7"
 	"github.com/sshelll/menuscreen"
 )
 
@@ -84,6 +85,7 @@ func selectPart() func(string) interface{} {
 		{part4Fn, "part 4: refactor part3 and replace the ops into '*' and '/'"},
 		{part5Fn, "part 5: support 'quadratic operations' based on part 4"},
 		{part6Fn, "part 6: support 'parentheses' based on part 5"},
+		{part7Fn, "part 7: refactor part6 with ast"},
 	}
 
 	// init menu
@@ -129,4 +131,8 @@ func part5Fn(expr string) interface{} {
 
 func part6Fn(expr string) interface{} {
 	return part6.NewInterpreter(expr).Expr()
+}
+
+func part7Fn(expr string) interface{} {
+	return part7.NewInterpreter(expr).Interpret()
 }
