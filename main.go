@@ -7,33 +7,30 @@ import (
 	"log"
 	"os"
 	"strings"
-
-	"github.com/sshelll/interpreter/part1"
-	"github.com/sshelll/interpreter/part2"
-	"github.com/sshelll/interpreter/part3"
-	"github.com/sshelll/interpreter/part4"
-	"github.com/sshelll/interpreter/part5"
-	"github.com/sshelll/interpreter/part6"
-	"github.com/sshelll/interpreter/part7"
-	"github.com/sshelll/interpreter/part8"
-	"github.com/sshelll/menuscreen"
 )
 
 var (
 	expr        = flag.String("e", "", "expression to evaluate")
 	interactive = flag.Bool("i", false, "interactive mode")
+	file        = flag.String("f", "", "use file content as input")
+	debugLexer  = flag.Bool("dl", false, "debug lexer")
+	p           = flag.Int("p", 0, "select part")
 )
 
 func main() {
+
 	flag.Parse()
 
-	if strings.TrimSpace(*expr) == "" && !*interactive {
+	if strings.TrimSpace(*expr) == "" &&
+		strings.TrimSpace(*file) == "" &&
+		!*interactive &&
+		!*debugLexer {
 		flag.Usage()
 		return
 	}
 
 	// choose a part, and wrap the func
-	fn := selectPart()
+	fn, lexerFn := selectPart()
 	safeFn := func(expr string) {
 		defer func() {
 			if r := recover(); r != nil {
@@ -41,6 +38,12 @@ func main() {
 			}
 		}()
 		fmt.Println(fn(expr))
+	}
+
+	// debug lexer
+	if *debugLexer {
+		lexerFn(*expr)
+		return
 	}
 
 	// expr mode
@@ -51,6 +54,11 @@ func main() {
 	// interactive mode
 	if *interactive {
 		interactiveMode(safeFn)
+	}
+
+	// file mode
+	if strings.TrimSpace(*file) != "" {
+		fileMode(safeFn)
 	}
 }
 
@@ -72,73 +80,14 @@ func interactiveMode(fn func(string)) {
 	}
 }
 
-func selectPart() func(string) interface{} {
-	// register parts
-	type part struct {
-		fn   func(string) interface{}
-		desc string
-	}
+func fileMode(fn func(string)) {
+	fn(readFile(*file))
+}
 
-	parts := []*part{
-		{part1Fn, "part 1: simple calculator, only support addition"},
-		{part2Fn, "part 2: support 'minus', 'spaces' and 'long numbers' based on part 1"},
-		{part3Fn, "part 3: support 'multi-ops' based on part 2"},
-		{part4Fn, "part 4: refactor part3 and replace the ops into '*' and '/'"},
-		{part5Fn, "part 5: support 'quadratic operations' based on part 4"},
-		{part6Fn, "part 6: support 'parentheses' based on part 5"},
-		{part7Fn, "part 7: refactor part6 with ast"},
-		{part8Fn, "part 8: support 'unary op' based on part7"},
-	}
-
-	// init menu
-	menu, err := menuscreen.NewMenuScreen()
+func readFile(path string) string {
+	content, err := os.ReadFile(path)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalf("read file %s failed, err = %v\n", *file, err)
 	}
-	defer menu.Fini()
-
-	menu.SetTitle("parts")
-	for _, p := range parts {
-		menu.AppendLines(p.desc)
-	}
-	menu.Start()
-
-	// get chosen part
-	idx, _, ok := menu.ChosenLine()
-	if !ok {
-		log.Fatalln("you haven't chosen any lines")
-	}
-	return parts[idx].fn
-}
-
-func part1Fn(expr string) interface{} {
-	return part1.NewInterpreter(expr).Expr()
-}
-
-func part2Fn(expr string) interface{} {
-	return part2.NewInterpreter(expr).Expr()
-}
-
-func part3Fn(expr string) interface{} {
-	return part3.NewInterpreter(expr).Expr()
-}
-
-func part4Fn(expr string) interface{} {
-	return part4.NewInterpreter(expr).Expr()
-}
-
-func part5Fn(expr string) interface{} {
-	return part5.NewInterpreter(expr).Expr()
-}
-
-func part6Fn(expr string) interface{} {
-	return part6.NewInterpreter(expr).Expr()
-}
-
-func part7Fn(expr string) interface{} {
-	return part7.NewInterpreter(expr).Interpret()
-}
-
-func part8Fn(expr string) interface{} {
-	return part8.NewInterpreter(expr).Interpret()
+	return string(content)
 }
